@@ -47,7 +47,10 @@ Open `samples/rfp/harborlight-dc-rfp.md` (the pack), `samples/output/proposal.md
 - English README and workflow diagram
 - Synthetic Harborlight DC RFP
 - Offline outline + chapter pipeline
+- Coverage report (`samples/output/coverage.json`)
 - Secret scan (`scripts/scan-secrets.py`)
+
+Longer architecture notes: [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 Not in this snapshot: customer bid files, Lark approval wiring, LLM keys.
 
