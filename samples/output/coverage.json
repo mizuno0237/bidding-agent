@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "required": [
+    "scope",
+    "functional",
+    "non_functional",
+    "implementation",
+    "training"
+  ],
+  "missing": []
+}

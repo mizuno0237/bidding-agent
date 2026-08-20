@@ -23,7 +23,7 @@ flowchart LR
 | Draft | Trace each requirement; do not invent missing ones |
 | Export | Write a technical proposal markdown **and** a JSON outline |
 
-D1 runs **offline**. No API key. Swap the drafter for an OpenAI-compatible model later; the outline stays the contract.
+The outline is the contract. `coverage.json` lists required sections with no RFP bullets so the drafter cannot invent them.
 
 ## Quick start
 

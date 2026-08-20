@@ -4,7 +4,14 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from bidding_agent.pipeline import build_outline, outline_as_json, parse_rfp, run_job, run_pipeline
+from bidding_agent.pipeline import (
+    build_outline,
+    coverage_report,
+    outline_as_json,
+    parse_rfp,
+    run_job,
+    run_pipeline,
+)
 
 RFP = ROOT / "samples" / "rfp" / "harborlight-dc-rfp.md"
 
@@ -45,3 +52,18 @@ def test_outline_json_keeps_section_ids_and_asn_trace() -> None:
     ]
     functional = next(row for row in payload if row["id"] == "functional")
     assert any("ASN" in str(bullet) for bullet in functional["bullets"])
+
+
+def test_coverage_is_complete_for_the_sample_rfp() -> None:
+    _, outline = run_job(RFP)
+    report = coverage_report(outline)
+    assert report["complete"] is True
+    assert report["missing"] == []
+
+
+def test_coverage_flags_missing_training_heading() -> None:
+    truncated = "\n".join(RFP.read_text(encoding="utf-8").split("## 5.")[0])
+    outline = build_outline(parse_rfp(truncated))
+    report = coverage_report(outline)
+    assert report["complete"] is False
+    assert "training" in report["missing"]

@@ -122,6 +122,17 @@ def draft_chapters(outline: list[OutlineItem]) -> str:
     return "\n".join(parts).rstrip() + "\n"
 
 
+def coverage_report(outline: list[OutlineItem]) -> dict[str, object]:
+    """Required response sections with no RFP bullets. The agent must not invent them."""
+    required = [item for item in outline if item.id != "assumptions"]
+    missing = [item.id for item in required if not item.bullets]
+    return {
+        "complete": len(missing) == 0,
+        "required": [item.id for item in required],
+        "missing": missing,
+    }
+
+
 def run_job(rfp_path: Path) -> tuple[str, list[OutlineItem]]:
     sections = parse_rfp(rfp_path.read_text(encoding="utf-8"))
     outline = build_outline(sections)
@@ -138,6 +149,7 @@ def main() -> None:
     parser.add_argument("rfp", type=Path, help="Path to a markdown RFP")
     parser.add_argument("--out", type=Path, default=Path("samples/output/proposal.md"))
     parser.add_argument("--outline", type=Path, default=Path("samples/output/outline.json"))
+    parser.add_argument("--report", type=Path, default=Path("samples/output/coverage.json"))
     args = parser.parse_args()
     markdown, outline = run_job(args.rfp)
     args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -146,8 +158,13 @@ def main() -> None:
         json.dumps(outline_as_json(outline), indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
+    args.report.write_text(
+        json.dumps(coverage_report(outline), indent=2) + "\n",
+        encoding="utf-8",
+    )
     print(f"wrote {args.out}")
     print(f"wrote {args.outline}")
+    print(f"wrote {args.report}")
 
 
 if __name__ == "__main__":

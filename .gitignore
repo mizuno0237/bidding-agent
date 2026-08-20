@@ -8,3 +8,4 @@ samples/output/*
 !samples/output/.gitkeep
 !samples/output/proposal.md
 !samples/output/outline.json
+!samples/output/coverage.json
