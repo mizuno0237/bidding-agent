@@ -1,0 +1,65 @@
+[
+  {
+    "id": "scope",
+    "title": "Understanding of scope",
+    "sourceHeading": "1. Scope of work",
+    "bullets": [
+      "Ingest daily demand and dock calendars",
+      "Produce a 7-day labor and wave plan",
+      "Flag capacity breaches before the shift starts",
+      "Export the plan as a board the floor supervisor can read"
+    ]
+  },
+  {
+    "id": "functional",
+    "title": "Functional response",
+    "sourceHeading": "2. Functional requirements",
+    "bullets": [
+      "ASN-to-slot recommendation within 15 minutes of inbound EDI.",
+      "Wave building that respects pick-face constraints and carrier cut-off times.",
+      "A finite-capacity view of picking, packing, and staging labor by hour.",
+      "Exception queue for late ASN, short pick, and dock conflict.",
+      "Read-only glossary of planning terms used on the floor (wave, cut-off, slotting)."
+    ]
+  },
+  {
+    "id": "non_functional",
+    "title": "Non-functional response",
+    "sourceHeading": "3. Non-functional requirements",
+    "bullets": [
+      "Plan refresh ≤ 60 seconds for the sample volume (8,000 lines / day).",
+      "Role-based access: planner, supervisor, read-only auditor.",
+      "Audit log of every plan publish (who / when / which wave set).",
+      "On-prem or private VPC; no training on issuer data."
+    ]
+  },
+  {
+    "id": "implementation",
+    "title": "Implementation plan",
+    "sourceHeading": "4. Implementation and cut-over",
+    "bullets": [
+      "Parallel run against the current spreadsheet plan for two peak weeks.",
+      "Data mapping for SKU, location, and carrier calendars.",
+      "Hypercare window of ten business days after go-live."
+    ]
+  },
+  {
+    "id": "training",
+    "title": "Training and support",
+    "sourceHeading": "5. Training and support",
+    "bullets": [
+      "Supervisor workshop (one day) and planner workshop (two days).",
+      "Runbook for cut-off misses and labor breach alerts.",
+      "Named vendor contact during hypercare."
+    ]
+  },
+  {
+    "id": "assumptions",
+    "title": "Assumptions and exclusions",
+    "sourceHeading": "Proposal format",
+    "bullets": [
+      "Sample is synthetic. No live inventory, no customer brand.",
+      "Commercial envelope (price, bonds) is out of scope for this public slice."
+    ]
+  }
+]

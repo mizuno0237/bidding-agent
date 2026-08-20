@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -85,6 +86,19 @@ def build_outline(sections: list[Section]) -> list[OutlineItem]:
     return outline
 
 
+def outline_as_json(outline: list[OutlineItem]) -> list[dict[str, object]]:
+    """Stable outline the drafter (or a later model) must follow. Missing bullets stay empty."""
+    return [
+        {
+            "id": item.id,
+            "title": item.title,
+            "sourceHeading": item.source_heading,
+            "bullets": item.bullets,
+        }
+        for item in outline
+    ]
+
+
 def draft_chapters(outline: list[OutlineItem]) -> str:
     parts = [
         "# Harborlight Regional DC — technical proposal (synthetic)",
@@ -108,21 +122,32 @@ def draft_chapters(outline: list[OutlineItem]) -> str:
     return "\n".join(parts).rstrip() + "\n"
 
 
-def run_pipeline(rfp_path: Path) -> str:
+def run_job(rfp_path: Path) -> tuple[str, list[OutlineItem]]:
     sections = parse_rfp(rfp_path.read_text(encoding="utf-8"))
     outline = build_outline(sections)
-    return draft_chapters(outline)
+    return draft_chapters(outline), outline
+
+
+def run_pipeline(rfp_path: Path) -> str:
+    markdown, _ = run_job(rfp_path)
+    return markdown
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="RFP → outline → chapter export (offline sample).")
     parser.add_argument("rfp", type=Path, help="Path to a markdown RFP")
     parser.add_argument("--out", type=Path, default=Path("samples/output/proposal.md"))
+    parser.add_argument("--outline", type=Path, default=Path("samples/output/outline.json"))
     args = parser.parse_args()
-    markdown = run_pipeline(args.rfp)
+    markdown, outline = run_job(args.rfp)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(markdown, encoding="utf-8")
+    args.outline.write_text(
+        json.dumps(outline_as_json(outline), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
     print(f"wrote {args.out}")
+    print(f"wrote {args.outline}")
 
 
 if __name__ == "__main__":

@@ -4,5 +4,7 @@ __pycache__
 .pytest_cache
 .env
 .DS_Store
-samples/output/*.md
+samples/output/*
 !samples/output/.gitkeep
+!samples/output/proposal.md
+!samples/output/outline.json
