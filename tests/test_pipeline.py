@@ -1,4 +1,6 @@
 from pathlib import Path
+import os
+import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,7 +53,15 @@ def test_outline_json_keeps_section_ids_and_asn_trace() -> None:
         "assumptions",
     ]
     functional = next(row for row in payload if row["id"] == "functional")
-    assert any("ASN" in str(bullet) for bullet in functional["bullets"])
+    first = functional["bullets"][0]
+    assert first["id"] == "REQ-F1"
+    assert "ASN" in first["text"]
+
+
+def test_proposal_stamps_requirement_ids() -> None:
+    markdown = run_pipeline(RFP)
+    assert "**REQ-F1:**" in markdown
+    assert "**REQ-N1:**" in markdown
 
 
 def test_coverage_is_complete_for_the_sample_rfp() -> None:
@@ -67,3 +77,31 @@ def test_coverage_flags_missing_training_heading() -> None:
     report = coverage_report(outline)
     assert report["complete"] is False
     assert "training" in report["missing"]
+
+
+def test_strict_cli_fails_when_training_is_missing(tmp_path: Path) -> None:
+    truncated = tmp_path / "rfp.md"
+    truncated.write_text("\n".join(RFP.read_text(encoding="utf-8").split("## 5.")[0]), encoding="utf-8")
+    env = os.environ.copy()
+    env["PYTHONPATH"] = str(ROOT / "src")
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "bidding_agent",
+            str(truncated),
+            "--strict",
+            "--out",
+            str(tmp_path / "proposal.md"),
+            "--outline",
+            str(tmp_path / "outline.json"),
+            "--report",
+            str(tmp_path / "coverage.json"),
+        ],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0
+    assert "training" in result.stderr + result.stdout

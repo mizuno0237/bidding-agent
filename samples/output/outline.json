@@ -4,10 +4,22 @@
     "title": "Understanding of scope",
     "sourceHeading": "1. Scope of work",
     "bullets": [
-      "Ingest daily demand and dock calendars",
-      "Produce a 7-day labor and wave plan",
-      "Flag capacity breaches before the shift starts",
-      "Export the plan as a board the floor supervisor can read"
+      {
+        "id": "REQ-S1",
+        "text": "Ingest daily demand and dock calendars"
+      },
+      {
+        "id": "REQ-S2",
+        "text": "Produce a 7-day labor and wave plan"
+      },
+      {
+        "id": "REQ-S3",
+        "text": "Flag capacity breaches before the shift starts"
+      },
+      {
+        "id": "REQ-S4",
+        "text": "Export the plan as a board the floor supervisor can read"
+      }
     ]
   },
   {
@@ -15,11 +27,26 @@
     "title": "Functional response",
     "sourceHeading": "2. Functional requirements",
     "bullets": [
-      "ASN-to-slot recommendation within 15 minutes of inbound EDI.",
-      "Wave building that respects pick-face constraints and carrier cut-off times.",
-      "A finite-capacity view of picking, packing, and staging labor by hour.",
-      "Exception queue for late ASN, short pick, and dock conflict.",
-      "Read-only glossary of planning terms used on the floor (wave, cut-off, slotting)."
+      {
+        "id": "REQ-F1",
+        "text": "ASN-to-slot recommendation within 15 minutes of inbound EDI."
+      },
+      {
+        "id": "REQ-F2",
+        "text": "Wave building that respects pick-face constraints and carrier cut-off times."
+      },
+      {
+        "id": "REQ-F3",
+        "text": "A finite-capacity view of picking, packing, and staging labor by hour."
+      },
+      {
+        "id": "REQ-F4",
+        "text": "Exception queue for late ASN, short pick, and dock conflict."
+      },
+      {
+        "id": "REQ-F5",
+        "text": "Read-only glossary of planning terms used on the floor (wave, cut-off, slotting)."
+      }
     ]
   },
   {
@@ -27,10 +54,22 @@
     "title": "Non-functional response",
     "sourceHeading": "3. Non-functional requirements",
     "bullets": [
-      "Plan refresh ≤ 60 seconds for the sample volume (8,000 lines / day).",
-      "Role-based access: planner, supervisor, read-only auditor.",
-      "Audit log of every plan publish (who / when / which wave set).",
-      "On-prem or private VPC; no training on issuer data."
+      {
+        "id": "REQ-N1",
+        "text": "Plan refresh ≤ 60 seconds for the sample volume (8,000 lines / day)."
+      },
+      {
+        "id": "REQ-N2",
+        "text": "Role-based access: planner, supervisor, read-only auditor."
+      },
+      {
+        "id": "REQ-N3",
+        "text": "Audit log of every plan publish (who / when / which wave set)."
+      },
+      {
+        "id": "REQ-N4",
+        "text": "On-prem or private VPC; no training on issuer data."
+      }
     ]
   },
   {
@@ -38,9 +77,18 @@
     "title": "Implementation plan",
     "sourceHeading": "4. Implementation and cut-over",
     "bullets": [
-      "Parallel run against the current spreadsheet plan for two peak weeks.",
-      "Data mapping for SKU, location, and carrier calendars.",
-      "Hypercare window of ten business days after go-live."
+      {
+        "id": "REQ-I1",
+        "text": "Parallel run against the current spreadsheet plan for two peak weeks."
+      },
+      {
+        "id": "REQ-I2",
+        "text": "Data mapping for SKU, location, and carrier calendars."
+      },
+      {
+        "id": "REQ-I3",
+        "text": "Hypercare window of ten business days after go-live."
+      }
     ]
   },
   {
@@ -48,9 +96,18 @@
     "title": "Training and support",
     "sourceHeading": "5. Training and support",
     "bullets": [
-      "Supervisor workshop (one day) and planner workshop (two days).",
-      "Runbook for cut-off misses and labor breach alerts.",
-      "Named vendor contact during hypercare."
+      {
+        "id": "REQ-T1",
+        "text": "Supervisor workshop (one day) and planner workshop (two days)."
+      },
+      {
+        "id": "REQ-T2",
+        "text": "Runbook for cut-off misses and labor breach alerts."
+      },
+      {
+        "id": "REQ-T3",
+        "text": "Named vendor contact during hypercare."
+      }
     ]
   },
   {
@@ -58,8 +115,14 @@
     "title": "Assumptions and exclusions",
     "sourceHeading": "Proposal format",
     "bullets": [
-      "Sample is synthetic. No live inventory, no customer brand.",
-      "Commercial envelope (price, bonds) is out of scope for this public slice."
+      {
+        "id": "REQ-A1",
+        "text": "Sample is synthetic. No live inventory, no customer brand."
+      },
+      {
+        "id": "REQ-A2",
+        "text": "Commercial envelope (price, bonds) is out of scope for this public slice."
+      }
     ]
   }
 ]

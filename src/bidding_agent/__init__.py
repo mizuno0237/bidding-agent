@@ -6,6 +6,7 @@ from .pipeline import (
     draft_chapters,
     outline_as_json,
     parse_rfp,
+    stamp_requirements,
     run_job,
     run_pipeline,
 )
@@ -18,4 +19,5 @@ __all__ = [
     "parse_rfp",
     "run_job",
     "run_pipeline",
+    "stamp_requirements",
 ]

@@ -86,6 +86,22 @@ def build_outline(sections: list[Section]) -> list[OutlineItem]:
     return outline
 
 
+REQ_PREFIX = {
+    "scope": "S",
+    "functional": "F",
+    "non_functional": "N",
+    "implementation": "I",
+    "training": "T",
+    "assumptions": "A",
+}
+
+
+def stamp_requirements(item: OutlineItem) -> list[dict[str, str]]:
+    """Stable ids so a reviewer can point at one RFP bullet."""
+    prefix = REQ_PREFIX[item.id]
+    return [{"id": f"REQ-{prefix}{index}", "text": text} for index, text in enumerate(item.bullets, start=1)]
+
+
 def outline_as_json(outline: list[OutlineItem]) -> list[dict[str, object]]:
     """Stable outline the drafter (or a later model) must follow. Missing bullets stay empty."""
     return [
@@ -93,7 +109,7 @@ def outline_as_json(outline: list[OutlineItem]) -> list[dict[str, object]]:
             "id": item.id,
             "title": item.title,
             "sourceHeading": item.source_heading,
-            "bullets": item.bullets,
+            "bullets": stamp_requirements(item),
         }
         for item in outline
     ]
@@ -116,8 +132,8 @@ def draft_chapters(outline: list[OutlineItem]) -> str:
         else:
             parts.append("Response traces the RFP as follows:")
             parts.append("")
-            for bullet in item.bullets:
-                parts.append(f"- **Trace:** {bullet}")
+            for bullet in stamp_requirements(item):
+                parts.append(f"- **{bullet['id']}:** {bullet['text']}")
         parts.append("")
     return "\n".join(parts).rstrip() + "\n"
 
@@ -150,21 +166,23 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=Path("samples/output/proposal.md"))
     parser.add_argument("--outline", type=Path, default=Path("samples/output/outline.json"))
     parser.add_argument("--report", type=Path, default=Path("samples/output/coverage.json"))
+    parser.add_argument("--strict", action="store_true", help="exit 2 if a required section has no RFP bullets")
     args = parser.parse_args()
     markdown, outline = run_job(args.rfp)
+    report = coverage_report(outline)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(markdown, encoding="utf-8")
     args.outline.write_text(
         json.dumps(outline_as_json(outline), indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
-    args.report.write_text(
-        json.dumps(coverage_report(outline), indent=2) + "\n",
-        encoding="utf-8",
-    )
+    args.report.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"wrote {args.out}")
     print(f"wrote {args.outline}")
     print(f"wrote {args.report}")
+    if args.strict and not report["complete"]:
+        missing = ", ".join(str(item) for item in report["missing"])
+        raise SystemExit(f"coverage incomplete: {missing}")
 
 
 if __name__ == "__main__":
