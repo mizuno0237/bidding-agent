@@ -69,6 +69,8 @@ def test_coverage_is_complete_for_the_sample_rfp() -> None:
     report = coverage_report(outline)
     assert report["complete"] is True
     assert report["missing"] == []
+    assert "REQ-F1" in report["stamped"]
+    assert report["count"] == len(report["stamped"])
 
 
 def test_coverage_flags_missing_training_heading() -> None:

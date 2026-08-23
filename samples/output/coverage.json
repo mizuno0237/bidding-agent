@@ -7,5 +7,29 @@
     "implementation",
     "training"
   ],
-  "missing": []
+  "missing": [],
+  "stamped": [
+    "REQ-S1",
+    "REQ-S2",
+    "REQ-S3",
+    "REQ-S4",
+    "REQ-F1",
+    "REQ-F2",
+    "REQ-F3",
+    "REQ-F4",
+    "REQ-F5",
+    "REQ-N1",
+    "REQ-N2",
+    "REQ-N3",
+    "REQ-N4",
+    "REQ-I1",
+    "REQ-I2",
+    "REQ-I3",
+    "REQ-T1",
+    "REQ-T2",
+    "REQ-T3",
+    "REQ-A1",
+    "REQ-A2"
+  ],
+  "count": 21
 }

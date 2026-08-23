@@ -142,10 +142,13 @@ def coverage_report(outline: list[OutlineItem]) -> dict[str, object]:
     """Required response sections with no RFP bullets. The agent must not invent them."""
     required = [item for item in outline if item.id != "assumptions"]
     missing = [item.id for item in required if not item.bullets]
+    stamped = [row["id"] for item in outline for row in stamp_requirements(item)]
     return {
         "complete": len(missing) == 0,
         "required": [item.id for item in required],
         "missing": missing,
+        "stamped": stamped,
+        "count": len(stamped),
     }
 
 
