@@ -10,3 +10,4 @@ samples/output/*
 !samples/output/outline.json
 !samples/output/coverage.json
 !samples/output/traceability.md
+!samples/output/coverage.md

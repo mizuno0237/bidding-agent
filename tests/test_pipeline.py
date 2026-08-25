@@ -8,6 +8,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from bidding_agent.pipeline import (
     build_outline,
+    coverage_markdown,
     coverage_report,
     outline_as_json,
     parse_rfp,
@@ -72,6 +73,10 @@ def test_coverage_is_complete_for_the_sample_rfp() -> None:
     assert report["missing"] == []
     assert "REQ-F1" in report["stamped"]
     assert report["count"] == len(report["stamped"])
+    assert report["byChapter"]["functional"] == 5
+    sheet = coverage_markdown(report)
+    assert "Status: **complete**" in sheet
+    assert "| functional | 5 |" in sheet
 
 
 def test_coverage_flags_missing_training_heading() -> None:

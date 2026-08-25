@@ -149,6 +149,7 @@ def coverage_report(outline: list[OutlineItem]) -> dict[str, object]:
         "missing": missing,
         "stamped": stamped,
         "count": len(stamped),
+        "byChapter": {item.id: len(stamp_requirements(item)) for item in outline},
     }
 
 
@@ -185,6 +186,27 @@ def traceability_markdown(rows: list[dict[str, str]]) -> str:
     return "\n".join(lines)
 
 
+def coverage_markdown(report: dict[str, object]) -> str:
+    """Reviewer sheet: complete/missing plus a count per chapter."""
+    status = "complete" if report["complete"] else "INCOMPLETE"
+    missing = ", ".join(str(item) for item in report["missing"]) or "—"
+    lines = [
+        "# Harborlight Regional DC — coverage sheet (synthetic)",
+        "",
+        f"Status: **{status}**. Missing required chapters: {missing}.",
+        "",
+        "| Chapter | Stamped |",
+        "| --- | ---: |",
+    ]
+    by_chapter = report.get("byChapter") or {}
+    for chapter_id, count in by_chapter.items():
+        lines.append(f"| {chapter_id} | {count} |")
+    lines.append("")
+    lines.append(f"Total stamped: {report['count']}")
+    lines.append("")
+    return "\n".join(lines)
+
+
 def run_job(rfp_path: Path) -> tuple[str, list[OutlineItem]]:
     sections = parse_rfp(rfp_path.read_text(encoding="utf-8"))
     outline = build_outline(sections)
@@ -203,6 +225,7 @@ def main() -> None:
     parser.add_argument("--outline", type=Path, default=Path("samples/output/outline.json"))
     parser.add_argument("--report", type=Path, default=Path("samples/output/coverage.json"))
     parser.add_argument("--matrix", type=Path, default=Path("samples/output/traceability.md"))
+    parser.add_argument("--sheet", type=Path, default=Path("samples/output/coverage.md"))
     parser.add_argument("--strict", action="store_true", help="exit 2 if a required section has no RFP bullets")
     args = parser.parse_args()
     markdown, outline = run_job(args.rfp)
@@ -216,10 +239,12 @@ def main() -> None:
     )
     args.report.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     args.matrix.write_text(matrix, encoding="utf-8")
+    args.sheet.write_text(coverage_markdown(report), encoding="utf-8")
     print(f"wrote {args.out}")
     print(f"wrote {args.outline}")
     print(f"wrote {args.report}")
     print(f"wrote {args.matrix}")
+    print(f"wrote {args.sheet}")
     if args.strict and not report["complete"]:
         missing = ", ".join(str(item) for item in report["missing"])
         raise SystemExit(f"coverage incomplete: {missing}")
