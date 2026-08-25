@@ -152,6 +152,39 @@ def coverage_report(outline: list[OutlineItem]) -> dict[str, object]:
     }
 
 
+def traceability_rows(outline: list[OutlineItem]) -> list[dict[str, str]]:
+    """One row per stamped requirement so a reviewer can jump chapter → RFP line."""
+    rows: list[dict[str, str]] = []
+    for item in outline:
+        for bullet in stamp_requirements(item):
+            rows.append(
+                {
+                    "id": bullet["id"],
+                    "chapterId": item.id,
+                    "chapter": item.title,
+                    "sourceHeading": item.source_heading,
+                    "text": bullet["text"],
+                }
+            )
+    return rows
+
+
+def traceability_markdown(rows: list[dict[str, str]]) -> str:
+    lines = [
+        "# Harborlight Regional DC — requirement traceability (synthetic)",
+        "",
+        "Each `REQ-*` maps to one proposal chapter. The agent does not invent ids.",
+        "",
+        "| Id | Chapter | RFP source | Requirement |",
+        "| --- | --- | --- | --- |",
+    ]
+    for row in rows:
+        text = row["text"].replace("|", "\\|")
+        lines.append(f"| {row['id']} | {row['chapter']} | {row['sourceHeading']} | {text} |")
+    lines.append("")
+    return "\n".join(lines)
+
+
 def run_job(rfp_path: Path) -> tuple[str, list[OutlineItem]]:
     sections = parse_rfp(rfp_path.read_text(encoding="utf-8"))
     outline = build_outline(sections)
@@ -169,10 +202,12 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=Path("samples/output/proposal.md"))
     parser.add_argument("--outline", type=Path, default=Path("samples/output/outline.json"))
     parser.add_argument("--report", type=Path, default=Path("samples/output/coverage.json"))
+    parser.add_argument("--matrix", type=Path, default=Path("samples/output/traceability.md"))
     parser.add_argument("--strict", action="store_true", help="exit 2 if a required section has no RFP bullets")
     args = parser.parse_args()
     markdown, outline = run_job(args.rfp)
     report = coverage_report(outline)
+    matrix = traceability_markdown(traceability_rows(outline))
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(markdown, encoding="utf-8")
     args.outline.write_text(
@@ -180,9 +215,11 @@ def main() -> None:
         encoding="utf-8",
     )
     args.report.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    args.matrix.write_text(matrix, encoding="utf-8")
     print(f"wrote {args.out}")
     print(f"wrote {args.outline}")
     print(f"wrote {args.report}")
+    print(f"wrote {args.matrix}")
     if args.strict and not report["complete"]:
         missing = ", ".join(str(item) for item in report["missing"])
         raise SystemExit(f"coverage incomplete: {missing}")

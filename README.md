@@ -22,6 +22,7 @@ flowchart LR
 | Outline | Map RFP headings onto a fixed response skeleton |
 | Draft | Trace each requirement; do not invent missing ones |
 | Export | Write a technical proposal markdown **and** a JSON outline |
+| Trace | Write `traceability.md` so each `REQ-*` maps to one chapter |
 
 The outline is the contract. Each bullet is stamped `REQ-F1` / `REQ-N1` so a reviewer can point at one line. `--strict` exits non-zero when a required heading is missing. Walkthrough: [`docs/WALKTHROUGH.md`](docs/WALKTHROUGH.md).
 

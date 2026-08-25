@@ -13,6 +13,7 @@ from bidding_agent.pipeline import (
     parse_rfp,
     run_job,
     run_pipeline,
+    traceability_rows,
 )
 
 RFP = ROOT / "samples" / "rfp" / "harborlight-dc-rfp.md"
@@ -79,6 +80,15 @@ def test_coverage_flags_missing_training_heading() -> None:
     report = coverage_report(outline)
     assert report["complete"] is False
     assert "training" in report["missing"]
+
+
+def test_traceability_maps_asn_to_functional_chapter() -> None:
+    _, outline = run_job(RFP)
+    rows = {row["id"]: row for row in traceability_rows(outline)}
+    assert rows["REQ-F1"]["chapterId"] == "functional"
+    assert rows["REQ-F1"]["chapter"] == "Functional response"
+    assert "ASN" in rows["REQ-F1"]["text"]
+    assert rows["REQ-T1"]["chapterId"] == "training"
 
 
 def test_strict_cli_fails_when_training_is_missing(tmp_path: Path) -> None:
