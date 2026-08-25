@@ -11,3 +11,9 @@ https://github.com/mizuno0237/bidding-agent
 **Topics**
 
 `ai-agents` `rfp` `proposal` `document-generation` `supply-chain` `python`
+
+## CLI (if `gh` is logged in)
+
+```powershell
+.\scripts\set-github-about.ps1
+```
