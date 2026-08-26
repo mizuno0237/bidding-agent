@@ -5,6 +5,7 @@ An **RFP-to-proposal document agent**: ingest a bid pack, build a response outli
 This is a **sanitized public slice**, not a dump of an internal bid workbench. The sample pack is a fictional regional DC. Customer RFPs, live prices, and internal hosts are stripped.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/mizuno0237/bidding-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/mizuno0237/bidding-agent/actions/workflows/ci.yml)
 
 ## Workflow
 
@@ -29,7 +30,7 @@ The outline is the contract. Each bullet is stamped `REQ-F1` / `REQ-N1` so a rev
 ## Quick start
 
 ```bash
-python -m pip install pytest
+python -m pip install -r requirements-dev.txt
 python -m pytest
 $env:PYTHONPATH="src"
 python -m bidding_agent samples/rfp/harborlight-dc-rfp.md --out samples/output/proposal.md --outline samples/output/outline.json
