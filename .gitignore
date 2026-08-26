@@ -11,3 +11,4 @@ samples/output/*
 !samples/output/coverage.json
 !samples/output/traceability.md
 !samples/output/coverage.md
+!samples/output/proposal.html

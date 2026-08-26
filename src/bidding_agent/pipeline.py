@@ -138,6 +138,36 @@ def draft_chapters(outline: list[OutlineItem]) -> str:
     return "\n".join(parts).rstrip() + "\n"
 
 
+def _esc(text: str) -> str:
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def proposal_html(markdown: str) -> str:
+    """Browser-readable proposal. Same content as proposal.md — no live bid."""
+    body: list[str] = []
+    for line in markdown.splitlines():
+        if line.startswith("# "):
+            body.append(f"<h1>{_esc(line[2:])}</h1>")
+        elif line.startswith("## "):
+            body.append(f"<h2>{_esc(line[3:])}</h2>")
+        elif line.startswith("> "):
+            body.append(f"<p class=\"note\">{_esc(line[2:])}</p>")
+        elif line.startswith("- "):
+            body.append(f"<li>{_esc(line[2:])}</li>")
+        elif line.startswith("*") and line.endswith("*"):
+            body.append(f"<p><em>{_esc(line.strip('*'))}</em></p>")
+        elif line.strip():
+            body.append(f"<p>{_esc(line)}</p>")
+    html_body = "\n".join(body)
+    return (
+        "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"/>"
+        "<title>Harborlight technical proposal (synthetic)</title>"
+        "<style>body{font:16px/1.5 Georgia,serif;max-width:720px;margin:32px auto;color:#1f241e}"
+        ".note{color:#5c6158}li{margin:4px 0}</style></head><body>"
+        f"{html_body}</body></html>\n"
+    )
+
+
 def coverage_report(outline: list[OutlineItem]) -> dict[str, object]:
     """Required response sections with no RFP bullets. The agent must not invent them."""
     required = [item for item in outline if item.id != "assumptions"]
@@ -226,6 +256,7 @@ def main() -> None:
     parser.add_argument("--report", type=Path, default=Path("samples/output/coverage.json"))
     parser.add_argument("--matrix", type=Path, default=Path("samples/output/traceability.md"))
     parser.add_argument("--sheet", type=Path, default=Path("samples/output/coverage.md"))
+    parser.add_argument("--html", type=Path, default=Path("samples/output/proposal.html"))
     parser.add_argument("--strict", action="store_true", help="exit 2 if a required section has no RFP bullets")
     args = parser.parse_args()
     markdown, outline = run_job(args.rfp)
@@ -240,11 +271,13 @@ def main() -> None:
     args.report.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     args.matrix.write_text(matrix, encoding="utf-8")
     args.sheet.write_text(coverage_markdown(report), encoding="utf-8")
+    args.html.write_text(proposal_html(markdown), encoding="utf-8")
     print(f"wrote {args.out}")
     print(f"wrote {args.outline}")
     print(f"wrote {args.report}")
     print(f"wrote {args.matrix}")
     print(f"wrote {args.sheet}")
+    print(f"wrote {args.html}")
     if args.strict and not report["complete"]:
         missing = ", ".join(str(item) for item in report["missing"])
         raise SystemExit(f"coverage incomplete: {missing}")

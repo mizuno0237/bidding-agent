@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>Harborlight technical proposal (synthetic)</title><style>body{font:16px/1.5 Georgia,serif;max-width:720px;margin:32px auto;color:#1f241e}.note{color:#5c6158}li{margin:4px 0}</style></head><body><h1>Harborlight Regional DC — technical proposal (synthetic)</h1>
+<p class="note">Generated offline from `samples/rfp/harborlight-dc-rfp.md`. Replace this stub with a model call later; the outline is the contract.</p>
+<h2>Understanding of scope</h2>
+<p>*RFP source:* 1. Scope of work</p>
+<p>Response traces the RFP as follows:</p>
+<li>**REQ-S1:** Ingest daily demand and dock calendars</li>
+<li>**REQ-S2:** Produce a 7-day labor and wave plan</li>
+<li>**REQ-S3:** Flag capacity breaches before the shift starts</li>
+<li>**REQ-S4:** Export the plan as a board the floor supervisor can read</li>
+<h2>Functional response</h2>
+<p>*RFP source:* 2. Functional requirements</p>
+<p>Response traces the RFP as follows:</p>
+<li>**REQ-F1:** ASN-to-slot recommendation within 15 minutes of inbound EDI.</li>
+<li>**REQ-F2:** Wave building that respects pick-face constraints and carrier cut-off times.</li>
+<li>**REQ-F3:** A finite-capacity view of picking, packing, and staging labor by hour.</li>
+<li>**REQ-F4:** Exception queue for late ASN, short pick, and dock conflict.</li>
+<li>**REQ-F5:** Read-only glossary of planning terms used on the floor (wave, cut-off, slotting).</li>
+<h2>Non-functional response</h2>
+<p>*RFP source:* 3. Non-functional requirements</p>
+<p>Response traces the RFP as follows:</p>
+<li>**REQ-N1:** Plan refresh ≤ 60 seconds for the sample volume (8,000 lines / day).</li>
+<li>**REQ-N2:** Role-based access: planner, supervisor, read-only auditor.</li>
+<li>**REQ-N3:** Audit log of every plan publish (who / when / which wave set).</li>
+<li>**REQ-N4:** On-prem or private VPC; no training on issuer data.</li>
+<h2>Implementation plan</h2>
+<p>*RFP source:* 4. Implementation and cut-over</p>
+<p>Response traces the RFP as follows:</p>
+<li>**REQ-I1:** Parallel run against the current spreadsheet plan for two peak weeks.</li>
+<li>**REQ-I2:** Data mapping for SKU, location, and carrier calendars.</li>
+<li>**REQ-I3:** Hypercare window of ten business days after go-live.</li>
+<h2>Training and support</h2>
+<p>*RFP source:* 5. Training and support</p>
+<p>Response traces the RFP as follows:</p>
+<li>**REQ-T1:** Supervisor workshop (one day) and planner workshop (two days).</li>
+<li>**REQ-T2:** Runbook for cut-off misses and labor breach alerts.</li>
+<li>**REQ-T3:** Named vendor contact during hypercare.</li>
+<h2>Assumptions and exclusions</h2>
+<p>*RFP source:* Proposal format</p>
+<p>Response traces the RFP as follows:</p>
+<li>**REQ-A1:** Sample is synthetic. No live inventory, no customer brand.</li>
+<li>**REQ-A2:** Commercial envelope (price, bonds) is out of scope for this public slice.</li></body></html>

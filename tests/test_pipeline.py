@@ -12,6 +12,7 @@ from bidding_agent.pipeline import (
     coverage_report,
     outline_as_json,
     parse_rfp,
+    proposal_html,
     run_job,
     run_pipeline,
     traceability_rows,
@@ -41,6 +42,13 @@ def test_export_traces_rfp_and_stays_synthetic() -> None:
     assert "Functional response" in markdown
     assert "synthetic" in markdown.lower()
     assert "live inventory" in markdown.lower()
+
+
+def test_html_proposal_stamps_req_f1() -> None:
+    html = proposal_html(run_pipeline(RFP))
+    assert "REQ-F1" in html
+    assert "Harborlight" in html
+    assert "<h1>" in html
 
 
 def test_outline_json_keeps_section_ids_and_asn_trace() -> None:
